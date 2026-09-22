@@ -129,16 +129,21 @@ body.in-space #landing *{animation-play-state:paused}
 .ch .j.hop{animation:hop .6s cubic-bezier(.3,1.5,.5,1)}
 .ch .in{
   display:inline-block;color:#4FE3C1;text-shadow:var(--ex);
+  animation:none;
+}
+html.fonts-ready .ch .in{
   animation:pop .9s cubic-bezier(.2,1.6,.4,1) both,hues 7s linear infinite;
-  animation-delay:calc(var(--i) * .065s + .15s),calc(var(--i) * -.4s);
+  animation-delay:calc(var(--i) * .065s + .05s),calc(var(--i) * -.4s);
 }
 @keyframes pop{0%{opacity:0;transform:translateY(70%) scale(.2) rotate(-30deg)}55%{opacity:1}100%{opacity:1;transform:none}}
 @keyframes hues{0%,100%{color:#4FE3C1}20%{color:#8B7CFF}40%{color:#F08BD9}60%{color:#FF4F8B}80%{color:#FFE8A3}}
 @keyframes hop{0%{transform:none}30%{transform:translateY(-38%) rotate(-12deg) scale(1.18)}62%{transform:translateY(6%) scale(1.06,.9)}100%{transform:none}}
 .name.glitch .letters{transform:skewX(-10deg) translateX(4px)}
 .name.glitch .in{text-shadow:-5px 0 #FF4F8B,5px 0 #4FE3C1,var(--ex)}
-.sw{display:inline-block;clip-path:inset(-20% -10% -30% -10%);transition:clip-path .45s cubic-bezier(.7,0,.2,1)}
-.sw.out{clip-path:inset(-20% 110% -30% -10%)}
+.sw{display:inline-block;transition:opacity .26s ease,transform .26s ease}
+.sw.out{opacity:0;transform:translateY(8px) rotate(-3deg)}
+.namewrap{visibility:hidden}
+html.fonts-ready .namewrap{visibility:visible}
 .psst{margin:-10px 0 0;font:500 12px var(--f-mono);color:#8a84a8;letter-spacing:.04em}
 .psst i{font-style:normal;display:inline-block;animation:nudge2 1.3s ease-in-out infinite}
 @keyframes nudge2{50%{transform:translateY(-4px)}}
@@ -955,7 +960,7 @@ h3.sub{margin:36px 0 0;font:italic 800 22px var(--f-name);letter-spacing:-.02em;
     if (sw && !REDUCED) setInterval(function(){
       if (body.classList.contains("in-space")) return;
       sw.classList.add("out");
-      setTimeout(function(){ wi = (wi + 1) % WORDS.length; sw.textContent = WORDS[wi]; sw.classList.remove("out"); }, 470);
+      setTimeout(function(){ wi = (wi + 1) % WORDS.length; sw.textContent = WORDS[wi]; sw.classList.remove("out"); }, 280);
     }, 3000);
 
     /* pointer: a light follows it, the window tilts, the art drifts, letters lift,
@@ -1959,6 +1964,19 @@ h3.sub{margin:36px 0 0;font:italic 800 22px var(--f-name);letter-spacing:-.02em;
   function prebuild(){ if (!built){ built = true; scene3d = buildScene(); } paintOrbs(); }
   if (location.hash.indexOf("#space") === 0) prebuild();
   else setTimeout(function(){ if (window.requestIdleCallback) requestIdleCallback(prebuild, {timeout: 1500}); else prebuild(); }, 700);
+
+  /* a link that still carries an old #space would drop people straight into the tour,
+     so a fresh page load always starts at the landing */
+  try{
+    var nav = performance.getEntriesByType && performance.getEntriesByType("navigation")[0];
+    if (location.hash && !(nav && nav.type === "back_forward")) history.replaceState(null, "", location.pathname + location.search);
+  }catch(e){}
+
+  /* wait for the fonts before showing the name, otherwise the first frame lays it out
+     in a fallback face and the script line lands in the wrong place */
+  function fontsReady(){ document.documentElement.classList.add("fonts-ready"); }
+  if (document.fonts && document.fonts.ready){ document.fonts.ready.then(fontsReady); setTimeout(fontsReady, 2000); }
+  else fontsReady();
 
   route();
 })();
