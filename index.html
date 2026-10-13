@@ -80,7 +80,7 @@ img,svg{display:block}
 
 /* ---------- header ---------- */
 .site-head{
-  position:sticky;top:0;z-index:30;background:rgba(255,255,255,.86);backdrop-filter:blur(12px);
+  position:sticky;top:0;z-index:30;background:var(--bg);
   border-bottom:1px solid var(--line);
 }
 .site-head .wrap{display:flex;align-items:center;gap:20px;height:64px}
@@ -101,6 +101,12 @@ section:first-of-type{border-top:0}
 
 /* ---------- hero ---------- */
 .hero{padding-top:clamp(52px,8vw,96px);padding-bottom:clamp(44px,6vw,72px)}
+.hero > .wrap > *{animation:heroIn .65s var(--ease) both}
+.hero h1{animation-delay:.06s}
+.hero .lede{animation-delay:.12s}
+.hero .ctas{animation-delay:.18s}
+.hero .proof{animation-delay:.24s}
+@keyframes heroIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 .hero h1{font-size:clamp(34px,5.4vw,58px);margin:18px 0 0;max-width:19ch}
 .hero .lede{margin-top:20px;font-size:clamp(17px,1.8vw,19.5px)}
 .hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
@@ -177,9 +183,9 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-bet
 footer a{text-decoration:none}
 footer a:hover{color:var(--ink)}
 
-/* things fade up once, gently */
-.rise{opacity:0;transform:translateY(14px)}
-.rise.in{opacity:1;transform:none;transition:opacity .6s var(--ease),transform .6s var(--ease)}
+/* things fade up once, gently. only hidden when the script is there to show them */
+html.js .rise{opacity:0;transform:translateY(14px)}
+html.js .rise.in{opacity:1;transform:none;transition:opacity .55s var(--ease),transform .55s var(--ease)}
 
 
 /* entering the 3d tour: the page steps out of the way */
@@ -1832,26 +1838,25 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
   function paintOrbs(){
     if (orbsPainted) return;
     orbsPainted = true;
-    function paint(){
-      PLANETS.forEach(function(p, idx){
-        var spots = document.querySelectorAll('[data-orb="' + p.id + '"]');
-        if (!spots.length) return;
-        var src = p.img || planetCanvas(p.ramp, 13 + idx * 17, 256), url = "";
-        try{ url = "url(" + src.toDataURL("image/jpeg", .85) + ")"; }catch(e){}
-        spots.forEach(function(el){
-          if (url) el.style.backgroundImage = url;
-          el.style.backgroundColor = p.ramp[2][1];
-        });
-      });
-    }
-    if (texQueue.length) texDone.push(paint); else paint();
+    PLANETS.forEach(function(p, idx){
+      var spots = document.querySelectorAll('[data-orb="' + p.id + '"]');
+      if (!spots.length) return;
+      spots.forEach(function(el){ el.style.backgroundColor = p.ramp[2][1]; });
+      setTimeout(function(){
+        var src = p.img || planetCanvas(p.ramp, 13 + idx * 17, 128), url = "";
+        try{ url = "url(" + src.toDataURL("image/jpeg", .82) + ")"; }catch(e){}
+        if (url) spots.forEach(function(el){ el.style.backgroundImage = url; });
+      }, 120 + idx * 90);
+    });
   }
+  paintOrbs();
 
-  /* build the scene while the visitor is still on the landing, so the jump is instant */
+  /* the 3d scene is only built when someone opens it. building it behind the homepage
+     cost a webgl context and a few hundred milliseconds of texture work, which made
+     scrolling judder */
   var built = false;
   function prebuild(){ if (!built){ built = true; scene3d = buildScene(); } paintOrbs(); }
   if (location.hash.indexOf("#space") === 0) prebuild();
-  else setTimeout(function(){ if (window.requestIdleCallback) requestIdleCallback(prebuild, {timeout: 1500}); else prebuild(); }, 700);
 
   /* a link that still carries an old #space would drop people straight into the tour,
      so a fresh page load always starts at the landing */
@@ -1875,21 +1880,33 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
     });
   });
 
-  /* sections fade up once as they arrive */
+  /* sections fade up as they come into view. a plain position check on scroll, which is
+     cheaper than it sounds for a dozen elements and never leaves anything stuck hidden */
   (function(){
-    var items = document.querySelectorAll(".rise");
+    var items = [].slice.call(document.querySelectorAll(".rise"));
     if (!items.length) return;
-    if (REDUCED || !("IntersectionObserver" in window)){
-      items.forEach(function(el){ el.classList.add("in"); });
-      return;
+    if (REDUCED){ items.forEach(function(el){ el.classList.add("in"); }); return; }
+    document.documentElement.classList.add("js");
+    var queued = false;
+    function sweep(){
+      queued = false;
+      var vh = innerHeight || document.documentElement.clientHeight || 800;
+      for (var i = items.length - 1; i >= 0; i--){
+        var r = items[i].getBoundingClientRect();
+        if (r.top < vh * .92 && r.bottom > -40){
+          items[i].classList.add("in");
+          items.splice(i, 1);
+        }
+      }
+      if (!items.length){
+        removeEventListener("scroll", onScroll);
+        removeEventListener("resize", onScroll);
+      }
     }
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(en){
-        if (en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); }
-      });
-    }, {rootMargin: "0px 0px -8% 0px"});
-    items.forEach(function(el){ io.observe(el); });
-    setTimeout(function(){ items.forEach(function(el){ el.classList.add("in"); }); }, 4000);
+    function onScroll(){ if (!queued){ queued = true; setTimeout(sweep, 40); } }
+    addEventListener("scroll", onScroll, {passive: true});
+    addEventListener("resize", onScroll);
+    sweep();
   })();
 
   route();
