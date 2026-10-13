@@ -468,9 +468,9 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
         <button class="btn ghost" type="button" data-enter>Explore in 3D</button>
       </div>
       <div class="proof">
-        <div><b>0.11 s</b><span>load time on the site I rebuilt, measured</span></div>
-        <div><b>85%</b><span>lighter after the rebuild, 505 kb down to 76 kb</span></div>
-        <div><b>4</b><span>projects shipped, one live for a paying client</span></div>
+        <div><b>0.11 s</b><span>for the rebuilt site to respond, measured</span></div>
+        <div><b>85%</b><span>less code to download, 505 kb down to 76 kb</span></div>
+        <div><b>4</b><span>projects built, one live for a client</span></div>
       </div>
     </div>
   </section>
@@ -492,7 +492,7 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
             <h3>Empower Her</h3>
             <span class="status live"><i></i>Live</span>
           </div>
-          <p>A women-only gym in Woodford, rebuilt by hand. The owner edits her own prices and class times from one screen, and the page got 85% lighter.</p>
+          <p>A women-only gym in Woodford, rebuilt by hand. The owner edits her own prices and class times from one screen, and the code it downloads got 85% lighter.</p>
           <div class="chips"><span>WordPress</span><span>PHP</span><span>JavaScript</span></div>
           <span class="more">Read the detail <span>&rarr;</span></span>
         </button>
@@ -706,16 +706,16 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
     <section class="pane" data-pane="empower">
       <div class="phero"><div><div class="proj-head"><h2>Empower Her</h2><span class="pill"><i class="dot ok"></i>Live</span><span class="pill">Client</span></div>
       <p class="what">A women-only gym in Woodford, rebuilt from the ground up.</p></div><div class="orb" data-orb="empower" aria-hidden="true"></div></div>
-      <div class="stats"><div class="stat"><b class="num" data-to="76|0| kb">76 kb</b><span>Page weight</span><small>Was 505 kb</small></div><div class="stat"><b class="num" data-to="6.6|1|x">6.6x</b><span>Lighter</span></div><div class="stat"><b class="num" data-to="0.11|2| s">0.11 s</b><span>To load, measured</span></div></div>
+      <div class="stats"><div class="stat"><b class="num" data-to="76|0| kb">76 kb</b><span>Code downloaded</span><small>Was 505 kb</small></div><div class="stat"><b class="num" data-to="6.6|1|x">6.6x</b><span>Lighter</span></div><div class="stat"><b class="num" data-to="0.11|2| s">0.11 s</b><span>To respond, measured</span></div></div>
       <p class="body">The old site was a bought template nobody had touched in years. I wrote a new front end by hand as a WordPress child theme, gave the owner one settings screen for her own prices, class times and contact details, then fixed what had quietly gone wrong underneath.</p>
 
       <div class="blk">
         <div class="diff" data-title="Homepage, before and after">
-<pre><span class="l d">- page weight    505 kb</span><span class="l a">+ page weight     76 kb</span><span class="l d">- asset urls     http on an https site</span><span class="l a">+ asset urls     https</span><span class="l d">- backups        none</span><span class="l a">+ backups        updraftplus, verified</span><span class="l d">- edits          ask a developer</span><span class="l a">+ edits          one settings screen</span><span class="l n">  load time      0.11 s</span></pre>
+<pre><span class="l d">- page code      505 kb</span><span class="l a">+ page code       76 kb</span><span class="l d">- asset urls     http on an https site</span><span class="l a">+ asset urls     https</span><span class="l d">- backups        none</span><span class="l a">+ backups        updraftplus, verified</span><span class="l d">- edits          ask a developer</span><span class="l a">+ edits          one settings screen</span><span class="l n">  response time  0.11 s</span></pre>
         </div>
         <div class="speed" id="speed">
           <div class="speed-top">
-            <span class="speed-q">How long it takes to arrive on</span>
+            <span class="speed-q">How long the page code takes to arrive on</span>
             <div class="nets" role="group" aria-label="Connection speed">
               <button type="button" data-kbps="400" data-rtt="400">Slow 3G</button>
               <button type="button" data-kbps="1600" data-rtt="150" class="on">Fast 3G</button>
@@ -802,7 +802,7 @@ input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;bac
     <section class="pane" data-pane="oligopoly" hidden>
       <div class="phero"><div><div class="proj-head"><h2>Oligopoly</h2><span class="pill"><i class="dot idle"></i>Personal</span><span class="pill">Python</span></div>
       <p class="what">Three markets, simulated until the firms stop moving.</p></div><div class="orb" data-orb="oligopoly" aria-hidden="true"></div></div>
-      <div class="stats"><div class="stat"><b class="num" data-to="3|0|">3</b><span>Market models</span></div><div class="stat"><b class="num" data-to="30|0|">30</b><span>Units each at equilibrium</span></div><div class="stat"><b class="num" data-to="9|0|">9</b><span>Rounds to settle</span></div></div>
+      <div class="stats"><div class="stat"><b class="num" data-to="3|0|">3</b><span>Market models</span></div><div class="stat"><b class="num" data-to="30|0|">30</b><span>Units each at equilibrium</span></div><div class="stat"><b class="num" data-to="7|0|">7</b><span>Rounds to settle</span></div></div>
       <p class="body">Cournot, Bertrand, and Bertrand with differentiated products, all on the same demand and cost numbers. Each runs best-response dynamics to a fixed point and gets checked against the closed form I solved by hand. The Cournot one runs right here. Move the sliders.</p>
       <div class="blk">
         <div class="sim" data-title="Cournot, in your browser">
